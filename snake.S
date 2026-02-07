@@ -1,7 +1,7 @@
 org 100h 
 
 section .data 
-vga_offset dd 0xA0000
+vga_offset dw 0xA000
 display_width dw 320
 display_height dw 200
 
@@ -12,21 +12,10 @@ start:
     mov al, 0x13
     int 10h
 
-    ; Write Pixel
-    mov ah, 0x0C
-    mov al, 15
-    mov cx, 50
-    mov dx, 50
-    int 10h
-
-    mov ah, 40
-    mov al, 40
-    mov bl, 15
+    mov bx, 40
+    mov ax, 40
+    mov cl, 15
     call write_pixel
-
-    ;mov eax, [vga_offset]
-    ;add eax, 5500
-    ;mov [eax], 15
 
     ; Key Wait
     mov ah, 00h
@@ -42,14 +31,20 @@ start:
     mov ax, 4C00h
     int 21h
 
-; ah: pixel_pos x
-; al: pixel_pos y
-; bl: color
+; bx: pixel_pos x
+; ax: pixel_pos y
+; cl: color
 write_pixel:
-    mov bh, [display_width]
-    mul bh
-    add al, ah
-    mov ecx, [vga_offset]
-    add cl, al
-    mov [ecx], bl
+    push es
+    
+    mov dx, [vga_offset]
+    mov es, dx
+    
+    mul [display_width]
+    add ax, bx
+    
+    mov [es:eax], cl
+    
+    pop es
     ret
+
