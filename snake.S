@@ -12,5 +12,5 @@ start:
     mov ax, 4C00h       ; Exit to DOS
     int 21h
 
-msg: db 'Snake game coming soon!', 13, 10, '$'
+msg: db "Snake game coming soon!", 13, 10, '$'
 
